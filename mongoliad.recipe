@@ -1,0 +1,40 @@
+import logging
+from calibre.web.feeds.recipes import BasicNewsRecipe
+from calibre.ebooks.BeautifulSoup import BeautifulSoup
+
+class MongoliadRecipe(BasicNewsRecipe):
+    title          = u'Mongoliad'
+    oldest_article = 60
+    max_articles_per_feed = 100
+    needs_subscription = True
+    encoding = 'utf8'
+    publisher = 'Subutai Corp.'
+    language = 'en_US'
+
+    keep_only_tags = [{'name': 'div', 'id': ['maintext']}]
+    no_stylesheets = True
+    extra_css = 'p img {text-align: center;}'
+
+    masthead_url = 'http://mongoliad.com/pedia/File:The%20Mongoliad/Teaser/Haakon%20final.jpg'
+
+    feeds          = [(u'contents', u'http://mongoliad.com/contents.sub.atom')]
+
+    def get_browser(self):
+
+        def predicate(form):
+            try:
+                if 'username' in form:
+                    return True
+                else:
+                    return False
+            except:
+                return False
+
+        br = BasicNewsRecipe.get_browser()
+        if self.username is not None and self.password is not None:
+            br.open('https://mongoliad.com/login')
+            br.select_form(predicate=predicate)
+            br['username'] = self.username
+            br['password'] = self.password
+            br.submit()
+        return br
