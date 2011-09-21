@@ -1,3 +1,5 @@
+# TODO: only download chapters
+
 import logging
 from calibre.web.feeds.recipes import BasicNewsRecipe
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
